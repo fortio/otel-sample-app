@@ -1,12 +1,12 @@
+FROM golang as build
+ARG VERSION=latest
+RUN go version
+RUN CGO_ENABLED=0 go install -a -ldflags -s fortio.org/fortiotel/in-out-sample@${VERSION}
 FROM scratch
-COPY fortiotel /usr/bin/fortio
-ENTRYPOINT ["/usr/bin/fortio"]
+COPY --from=build /go/bin/in-out-sample /usr/local/bin/
+COPY --from=build /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 EXPOSE 8080
-# Prom metrics exports/scrape
-EXPOSE 9102
-# configmap (dynamic flags)
-VOLUME /etc/fortio-config
-# logs etc
-WORKDIR /var/log/fortio
-# start the fortiotel with default; the routes and cert by default
-CMD ["-config", "/etc/fortio-config"]
+ENV OTEL_SERVICE_NAME "in-out-sample"
+# Assumes you added --collector.otlp.enabled=true to your Jaeger deployment
+ENV OTEL_EXPORTER_OTLP_ENDPOINT http://jaeger-collector.istio-system.svc.cluster.local:4317
+CMD ["/usr/local/bin/in-out-sample", "-b3"]
