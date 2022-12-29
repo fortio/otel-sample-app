@@ -1,4 +1,4 @@
-module fortio.org/fortiotel/in-out-sample
+module fortio.org/otel-sample-app
 
 go 1.18
 

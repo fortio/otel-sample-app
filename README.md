@@ -1,29 +1,29 @@
-# Fortio experimental OTel = fortiotel
+# Open Telemetry (OTEL) Sample App
 
-[Fortio](https://github.com/fortio/fortio) but with experimental open telemetry tracing.
 
 # Install
 
 using golang 1.18+
 
+Locally
 ```shell
-go install fortio.org/fortiotel@latest
+go install fortio.org/otel-sample-app@latest
 ```
 
-You can also download one of the many binary [releases](https://github.com/fortio/fortiotel/releases)
+Or Docker - optimized for istio kubernetes cluster
 
-We publish a multi architecture docker image (linux/amd64, linux/arm64) `docker run fortio/fortiotel`
 
 # Testing:
 
 Start a local jaeger with otel receiver:
 ```
-docker run -p 16686:16686 -p 4317:4317 jaegertracing/all-in-one:latest --collector.otlp.enabled=true --collector.otlp.grpc.host-port=:4317
+docker run -p 16686:16686 -p 4317:4317 jaegertracing/all-in-one:latest --collector.otlp.enabled=true
 ```
 
-Run fortio server and then for instance:
 ```
-OTEL_SERVICE_NAME=fortio go run . load localhost:8080
+fortio server & # echo/debug server
+OTEL_SERVICE_NAME=local-test go run . -b3 -listen :8000 -url http://localhost:8080/debug &
+curl -v localhost:8000
 ```
 
 Get traces: http://localhost:16686/search
@@ -33,5 +33,15 @@ Get traces: http://localhost:16686/search
 Initially loosely based on
 
 https://github.com/open-telemetry/opentelemetry-go-contrib/tree/main/instrumentation/net/http/httptrace/otelhttptrace
+
+and
+
+https://github.com/open-telemetry/opentelemetry-go-contrib/blob/main/instrumentation/net/http/otelhttp/example/client/client.go
+
+and
+
+https://github.com/open-telemetry/opentelemetry-go-contrib/blob/main/instrumentation/net/http/otelhttp/example/server/server.go
+
+all combined
 
 (which doesn't work without an outer span setup first in the context, see [simple/](simple/))
