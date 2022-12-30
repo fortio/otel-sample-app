@@ -48,7 +48,10 @@ OTEL_EXPORTER_OTLP_ENDPOINT="http://jaeger-collector.istio-system.svc.cluster.lo
 
 */
 
-var b3Flag = flag.Bool("b3", false, "Set to use b3 propagation instead of traceparent")
+var (
+	b3SingleFlag = flag.Bool("b3single", false, "Set to use b3 single header propagation instead of traceparent")
+	b3MultiFlag  = flag.Bool("b3multi", false, "Set to use b3 multi header propagation instead of traceparent")
+)
 
 func installExportPipeline(ctx context.Context) (func(context.Context) error, error) {
 	// Insecure needed for jaeger otel grpc endpoint by default/using all-in-one.
@@ -65,8 +68,10 @@ func installExportPipeline(ctx context.Context) (func(context.Context) error, er
 	otel.SetTracerProvider(tracerProvider)
 	// Needed to get headers, either b3 or traceparent
 	var propagator propagation.TextMapPropagator
-	if *b3Flag {
+	if *b3SingleFlag {
 		propagator = b3.New(b3.WithInjectEncoding(b3.B3SingleHeader))
+	} else if *b3MultiFlag {
+		propagator = b3.New(b3.WithInjectEncoding(b3.B3MultipleHeader))
 	} else {
 		propagator = propagation.NewCompositeTextMapPropagator( /*propagation.Baggage{},*/ propagation.TraceContext{})
 	}
@@ -93,7 +98,7 @@ func main() {
 		log.Fatalf("Error setting up export pipeline: %v", e)
 	}
 	binfo, _ := debug.ReadBuildInfo()
-	log.Printf(binfo.String())
+	log.Println(binfo.String())
 	log.Printf("OTEL_SERVICE_NAME=%s", os.Getenv("OTEL_SERVICE_NAME"))
 	log.Printf("OTEL_EXPORTER_OTLP_ENDPOINT=%s", os.Getenv("OTEL_EXPORTER_OTLP_ENDPOINT"))
 	log.Printf("OTEL export pipeline setup successfully - Starting sample server on -listen %s to forward to -url %s", *listen, *url)
