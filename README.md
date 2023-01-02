@@ -48,4 +48,4 @@ https://github.com/open-telemetry/opentelemetry-go-contrib/blob/main/instrumenta
 
 all combined
 
-(which doesn't work without an outer span setup first in the context, see [fortio/fortiotel/simple](https://github.com/fortio/fortiotel/blob/main/simple/otel_httptrace_simple.go)
+(which doesn't work without an outer span setup first in the context, see [fortio/fortiotel/simple](https://github.com/fortio/fortiotel/blob/main/simple/otel_httptrace_simple.go))
