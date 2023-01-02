@@ -28,6 +28,10 @@ curl -v localhost:8000
 
 Get traces: http://localhost:16686/search
 
+See also [Makefile](Makefile) for examples.
+
+The [Dockerfile](Dockerfile) is setup for istio/envoy 1.15.x config with `b3` multi headers (what istio envoy uses by default).
+
 # Documentation
 
 Initially loosely based on
@@ -44,4 +48,4 @@ https://github.com/open-telemetry/opentelemetry-go-contrib/blob/main/instrumenta
 
 all combined
 
-(which doesn't work without an outer span setup first in the context, see [simple/](simple/))
+(which doesn't work without an outer span setup first in the context, see [fortio/fortiotel/simple](https://github.com/fortio/fortiotel/blob/main/simple/otel_httptrace_simple.go)

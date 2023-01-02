@@ -1,5 +1,2 @@
 .vscode
-*.json
-dist/
-fortiotel
-go.work.sum
+otel-sample-app
