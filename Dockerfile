@@ -1,9 +1,6 @@
 # Go releaser dockerfile
-#FROM alpine as certs
-#RUN apk update && apk add ca-certificates
-# ^ alpine doesn't seem to work (with goreleaser, works fine from docker build cmd line), trying with ubuntu
-FROM ubuntu as certs
-RUN apt-get update && apt-get install -y ca-certificates
+FROM alpine as certs
+RUN apk update && apk add ca-certificates
 FROM scratch
 COPY otel-sample-app /usr/local/bin/otel-sample-app
 COPY --from=certs /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
