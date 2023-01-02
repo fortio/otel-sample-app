@@ -22,7 +22,7 @@ docker run -p 16686:16686 -p 4317:4317 jaegertracing/all-in-one:latest --collect
 
 ```
 fortio server & # echo/debug server
-OTEL_SERVICE_NAME=local-test go run . -b3 -listen :8000 -url http://localhost:8080/debug &
+OTEL_SERVICE_NAME=local-test go run . -b3multi -listen :8000 -url http://localhost:8080/debug &
 curl -v localhost:8000
 ```
 
