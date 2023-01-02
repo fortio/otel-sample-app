@@ -13,7 +13,7 @@ local-jaeger:
 
 local-test:
 	@echo "Assuming you have a local fortio server running - then curl localhost:8000 and check traces in jaeger"
-	OTEL_SERVICE_NAME=local-test go run . -b3multi -listen :8000 -url http://localhost:8080/debug
+	OTEL_SERVICE_NAME=local-test go run -race . -b3multi -listen :8000 -url "http://localhost:8080/debug?delay=250ms"
 
 # Check certs are there in the docker image:
 docker-test:
