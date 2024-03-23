@@ -68,11 +68,12 @@ func installExportPipeline(ctx context.Context) (func(context.Context) error, er
 	otel.SetTracerProvider(tracerProvider)
 	// Needed to get headers, either b3 or traceparent
 	var propagator propagation.TextMapPropagator
-	if *b3SingleFlag {
+	switch {
+	case *b3SingleFlag:
 		propagator = b3.New(b3.WithInjectEncoding(b3.B3SingleHeader))
-	} else if *b3MultiFlag {
+	case *b3MultiFlag:
 		propagator = b3.New(b3.WithInjectEncoding(b3.B3MultipleHeader))
-	} else {
+	default:
 		propagator = propagation.NewCompositeTextMapPropagator( /*propagation.Baggage{},*/ propagation.TraceContext{})
 	}
 	otel.SetTextMapPropagator(propagator) // key for getting headers
@@ -105,17 +106,17 @@ func main() {
 
 	// tracer := otel.Tracer("github.com/fortio/fortiotel")
 
-	inputHandler := func(w http.ResponseWriter, req *http.Request) {
-		ctx := req.Context()
+	inputHandler := func(w http.ResponseWriter, r *http.Request) {
+		ctx := r.Context()
 		span := trace.SpanFromContext(ctx)
 		span.AddEvent("handling input...")
 
 		clientTrace := otelhttptrace.NewClientTrace(ctx)
-		req, err := http.NewRequestWithContext(ctx, http.MethodGet, *url, nil)
+		r, err := http.NewRequestWithContext(ctx, http.MethodGet, *url, nil)
 		if err != nil {
 			log.Fatalf("Error creating request: %v", err)
 		}
-		req = req.WithContext(httptrace.WithClientTrace(req.Context(), clientTrace)) // contextcheck not happy somehow
+		r = r.WithContext(httptrace.WithClientTrace(r.Context(), clientTrace)) //nolint:contextcheck // TODO: not happy somehow
 		// Create an http.Client that uses the (ot)http.Transport
 		// wrapped around the http.DefaultTransport - but headers are available through the propagator above.
 		// Unfortunately the http trace spans aren't nested in the http one...
@@ -123,7 +124,7 @@ func main() {
 		cli := http.Client{
 			Transport: otelhttp.NewTransport(http.DefaultTransport),
 		}
-		resp, err := cli.Do(req)
+		resp, err := cli.Do(r)
 		if err != nil {
 			log.Fatalf("Error executing request: %v", err)
 		}
@@ -140,7 +141,7 @@ func main() {
 	}
 	otelHandler := otelhttp.NewHandler(http.HandlerFunc(inputHandler), "In")
 	log.Printf("Starting server on %s", *listen)
-	err := http.ListenAndServe(*listen, otelHandler)
+	err := http.ListenAndServe(*listen, otelHandler) //nolint:gosec // TODO this is just a demo, for real code configure timeouts etc.
 	if err != nil {
 		log.Fatal(err)
 	}
