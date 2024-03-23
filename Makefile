@@ -20,3 +20,11 @@ docker-test:
 	docker pull fortio/otel-sample-app:latest
 	docker run -p 8000:8080 -e OTEL_EXPORTER_OTLP_ENDPOINT=http://host.docker.internal:4317 fortio/otel-sample-app:latest -url https://httpbin.org/headers -b3multi
 	@echo "Visit http://localhost:8000 and headers and see trace in http://localhost:16686"
+
+lint: .golangci.yml
+	golangci-lint run
+
+.golangci.yml: Makefile
+	curl -fsS -o .golangci.yml https://raw.githubusercontent.com/fortio/workflows/main/golangci.yml
+
+.PHONY: lint
