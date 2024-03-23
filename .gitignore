@@ -1,2 +1,4 @@
+.goreleaser.yaml
+.golangci.yml
 .vscode
 otel-sample-app
