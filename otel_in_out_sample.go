@@ -100,6 +100,13 @@ func main() {
 	}
 	binfo, _ := debug.ReadBuildInfo()
 	log.Println(binfo.String())
+	// Adding this because of shared workflows call "buildinfo" which is handled in fortio/cli
+	// for other projects but not this one which has no dependencies beside otel.
+	if flag.NArg() > 0 {
+		log.Printf("Unknown arguments: %v", flag.Args())
+		flag.Usage()
+		os.Exit(1)
+	}
 	log.Printf("OTEL_SERVICE_NAME=%s", os.Getenv("OTEL_SERVICE_NAME"))
 	log.Printf("OTEL_EXPORTER_OTLP_ENDPOINT=%s", os.Getenv("OTEL_EXPORTER_OTLP_ENDPOINT"))
 	log.Printf("OTEL export pipeline setup successfully - Starting sample server on -listen %s to forward to -url %s", *listen, *url)
