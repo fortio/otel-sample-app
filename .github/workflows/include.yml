@@ -1,4 +1,4 @@
-name: "Shared server binery fortio workflows"
+name: "Shared fortio workflows"
 on:
     push:
       branches: [ main ]
