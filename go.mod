@@ -1,6 +1,6 @@
 module fortio.org/otel-sample-app
 
-go 1.18
+go 1.22
 
 require (
 	go.opentelemetry.io/contrib/instrumentation/net/http/httptrace/otelhttptrace v0.49.0
