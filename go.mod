@@ -1,8 +1,9 @@
 module fortio.org/otel-sample-app
 
-go 1.22
+go 1.23
+
 // shouldn't but is because of Code quality not using setup go
-toolchain go1.22.5 // this shouldn't be necessary - see https://github.com/golang/go/issues/66175#issuecomment-2010343876
+toolchain go1.23.7 // this shouldn't be necessary - see https://github.com/golang/go/issues/66175#issuecomment-2010343876
 
 require (
 	go.opentelemetry.io/contrib/instrumentation/net/http/httptrace/otelhttptrace v0.60.0
