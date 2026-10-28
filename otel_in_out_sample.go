@@ -107,8 +107,8 @@ func main() {
 		flag.Usage()
 		os.Exit(1)
 	}
-	log.Printf("OTEL_SERVICE_NAME=%s", os.Getenv("OTEL_SERVICE_NAME"))
-	log.Printf("OTEL_EXPORTER_OTLP_ENDPOINT=%s", os.Getenv("OTEL_EXPORTER_OTLP_ENDPOINT"))
+	log.Printf("OTEL_SERVICE_NAME=%s", os.Getenv("OTEL_SERVICE_NAME"))                     //nolint:gosec // demo logs own env
+	log.Printf("OTEL_EXPORTER_OTLP_ENDPOINT=%s", os.Getenv("OTEL_EXPORTER_OTLP_ENDPOINT")) //nolint:gosec // demo logs own env
 	log.Printf("OTEL export pipeline setup successfully - Starting sample server on -listen %s to forward to -url %s", *listen, *url)
 
 	// tracer := otel.Tracer("github.com/fortio/fortiotel")
